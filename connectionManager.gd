@@ -1,0 +1,87 @@
+extends Node2D
+
+var current_device := 0 # device ID
+#var inputManager : InputManager
+
+func _ready() -> void:
+	Input.joy_connection_changed.connect(joypad_connected)
+	
+	# connect buttons
+	$Calibrate.pressed.connect(func() -> void:
+		Input.start_joy_motion_calibration(current_device)
+		#$CalibrationInProgress.show()
+		for i in 50:
+			Input.step_joy_motion_calibration(current_device)
+			await get_tree().create_timer(0.05).timeout
+		Input.stop_joy_motion_calibration(current_device)
+		#$CalibrationInProgress.hide()
+		)
+	
+	$ResetCalibration.pressed.connect(func() -> void:
+		Input.clear_joy_motion_calibration(current_device)
+		)
+	
+	$ColorPickerButton.color_changed.connect(color_picker_helper.bind(current_device))
+
+
+func joypad_connected(device: int, connected: bool) -> void:
+	if not connected:
+		$ConnectedCheck.button_pressed = false # device connected
+		$AccelCheck.button_pressed = false # has accelerometer
+		$GyroCheck.button_pressed = false # has gyrometer
+		$LightCheck.button_pressed = false # has LED support
+		$ColorPickerButton.disabled = true # allows selecting LED color
+		return
+		
+	current_device = device
+	$ConnectedCheck.button_pressed = true
+	$JoyName.text = "Gamepad name: " + Input.get_joy_name(current_device)
+	
+	# check for sensors/extra features
+	if Input.has_joy_accelerometer(current_device):
+		Input.set_joy_accelerometer_enabled(current_device, true)
+		$AccelCheck.button_pressed = true
+		
+	if Input.has_joy_gyroscope(current_device):
+		Input.set_joy_gyroscope_enabled(current_device, true)
+		$GyroCheck.button_pressed = true
+		
+	if Input.has_joy_light(current_device):
+		$LightCheck.button_pressed = true
+		$ColorPickerButton.disabled = false
+	
+	# Device Info
+	#$Model.text = "Model: " + str(Input.get_joy_model(current_device))
+	#$Scheme.text = "Scheme: " + str(Input.get_joy_scheme(current_device))
+	#$DeviceType.text = "Device type: " +  str(Input.get_joy_device_type(current_device))
+	#$PowerState.text = "Power state: " + str(Input.get_joy_power_state(current_device))
+	#$ConnectionState.text = "Connection state: " + str(Input.get_joy_connection_state(current_device))
+	#$BatteryPercent.text = "Battery percent: " + str(Input.get_joy_battery_percent(current_device))
+
+func _process(_delta: float) -> void:
+	if Input.has_joy_accelerometer(0):
+		$AccelValue.text = "%s" % Input.get_joy_accelerometer(0)
+		$Gravity.text = "Gravity: %s" % Input.get_joy_gravity(0)
+	if Input.has_joy_gyroscope(0):
+		$GyroValue.text = "%s" % Input.get_joy_gyroscope(0)
+	#$SensorRate.text = "Sensor rate: " + str(Input.get_joy_sensor_rate(0))
+
+	
+	#if Input.is_joy_motion_calibrated(current_device):
+		#$ColorRect.position.x += Input.get_joy_gyroscope(0).y * 5
+		#$ColorRect.position.y += Input.get_joy_gyroscope(0).x * 5
+		#$ColorRect2.position.x += Input.get_joy_accelerometer(0).x * 5
+		#$ColorRect2.position.y += Input.get_joy_accelerometer(0).y * 5
+	
+	var left_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_LEFT_X),
+	Input.get_joy_axis(current_device, JOY_AXIS_LEFT_Y))
+	#var right_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_RIGHT_X), 
+	#Input.get_joy_axis(current_device, JOY_AXIS_RIGHT_Y))
+	print(str(left_joy_output.snapped(Vector2(0.1, 0.1))))
+
+
+# clunky, but swaps param order cuz of shenanigans with bind and emit
+# bind's parameters are placed after emit's
+func color_picker_helper(color: Color, cur_dev : int):
+	Input.set_joy_light(cur_dev, color)
+	print("Set color to %s" % [color])
