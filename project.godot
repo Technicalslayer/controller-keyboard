@@ -15,6 +15,10 @@ run/main_scene="uid://djcg3f15geai3"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+JKEnumHelper="*res://enum_helper.gd"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

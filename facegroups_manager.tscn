@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://i7rs4mnf7r4o"]
+
+[ext_resource type="Script" uid="uid://danb7yp8udljn" path="res://facegroups_manager.gd" id="1_8t3k3"]
+
+[node name="FacegroupsManager" type="Node"]
+script = ExtResource("1_8t3k3")

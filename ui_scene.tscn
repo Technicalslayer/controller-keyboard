@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://djcg3f15geai3"]
+[gd_scene load_steps=4 format=3 uid="uid://djcg3f15geai3"]
 
 [ext_resource type="Script" uid="uid://7xhdus84tmjg" path="res://connectionManager.gd" id="1_7s2fk"]
 [ext_resource type="PackedScene" uid="uid://bfn0hi6guyren" path="res://joy_display.tscn" id="2_y37xc"]
+[ext_resource type="PackedScene" uid="uid://i7rs4mnf7r4o" path="res://facegroups_manager.tscn" id="3_3thnl"]
 
 [node name="UIScene" type="Node2D"]
 script = ExtResource("1_7s2fk")
@@ -89,3 +90,5 @@ offset_bottom = 154.0
 
 [node name="JoyDisplay" parent="." instance=ExtResource("2_y37xc")]
 position = Vector2(672, 378)
+
+[node name="FacegroupsManager" parent="." instance=ExtResource("3_3thnl")]
