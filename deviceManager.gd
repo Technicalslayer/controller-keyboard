@@ -58,6 +58,7 @@ func joypad_connected(device: int, connected: bool) -> void:
 	#$ConnectionState.text = "Connection state: " + str(Input.get_joy_connection_state(current_device))
 	#$BatteryPercent.text = "Battery percent: " + str(Input.get_joy_battery_percent(current_device))
 
+
 func _process(_delta: float) -> void:
 	if Input.has_joy_accelerometer(0):
 		$AccelValue.text = "%s" % Input.get_joy_accelerometer(0)

@@ -4,8 +4,25 @@ var greatest_angle # if calc angle is greater than this, it will be in the first
 @export
 var facegroups: Array[FaceGroupData]
 
+var cur_face_group: FaceGroupData = null
+var current_device
+
+
 func _ready():
 	_read_facegroup_from_file() # temp?
+	# connect signals
+	Input.joy_connection_changed.connect(joypad_connected)
+
+
+func joypad_connected(device, _connected):
+	current_device = device
+
+
+func _process(_delta):
+	var left_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_LEFT_X),
+			Input.get_joy_axis(current_device, JOY_AXIS_LEFT_Y))
+	
+	_select_face_group(left_joy_output.angle())
 
 
 # returns array of lower and upper angle bounds. (lower angle=x, upper angle=y)
@@ -22,6 +39,7 @@ func _calculate_face_group_angles(num_groups) -> Array:
 		temp_angles.y = (group_angle_size * i) + group_offset
 		group_angles.append(temp_angles)
 	return group_angles
+
 
 func _read_facegroup_from_file():
 	var file = FileAccess.open("res://face_groups.txt", FileAccess.READ)
@@ -71,7 +89,7 @@ func create_facegroup():
 	# button data just needs what character to output and maybe activation mode
 
 
-func _select_face_group(joy_angle) -> FaceGroupData:
+func _select_face_group(joy_angle) -> void:
 	# My math might be bad here, but Vector2.angle() returns negative values when
 	#  over 1 PI. I can wrap all angles to positive, but this causes issues
 	#  because of the offset I apply makes the first group have a negative lower
@@ -84,12 +102,12 @@ func _select_face_group(joy_angle) -> FaceGroupData:
 	
 	if joy_angle > $"../ControllerController".greatest_angle:
 		print(str($"../ControllerController".face_groups[0].resource_name))
-		return $"../ControllerController".face_groups[0]
+		cur_face_group = $"../ControllerController".face_groups[0]
 	
 	# iterate through all face groups to find where this angle is in
 	for f in $"../ControllerController".face_groups:
 		if f.group_angles.x <= joy_angle && f.group_angles.y > joy_angle:
 			print(str(f.resource_name))
-			return f
+			cur_face_group = f
 		
-	return null
+	cur_face_group = null

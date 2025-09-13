@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://djcg3f15geai3"]
 
-[ext_resource type="Script" uid="uid://7xhdus84tmjg" path="res://connectionManager.gd" id="1_7s2fk"]
+[ext_resource type="Script" uid="uid://7xhdus84tmjg" path="res://deviceManager.gd" id="1_7s2fk"]
 [ext_resource type="PackedScene" uid="uid://bfn0hi6guyren" path="res://joy_display.tscn" id="2_y37xc"]
 [ext_resource type="PackedScene" uid="uid://i7rs4mnf7r4o" path="res://facegroups_manager.tscn" id="3_3thnl"]
 
