@@ -49,8 +49,10 @@ func _calculate_face_group_angles(num_groups) -> Array:
 func _read_facegroup_from_file():
 	var file = FileAccess.open("res://face_groups.txt", FileAccess.READ)
 	var content = file.get_as_text()
+	content = content.trim_suffix("\n")
 	var split_array = content.split(" ", false)
 	var num_groups = ceili(split_array.size()/4.0)
+	print("split array size: %s" % [split_array.size()])
 	var group_modulo = split_array.size() % 4 # how many in the last incomplete group
 	
 	# get button info and angles
@@ -70,16 +72,16 @@ func _read_facegroup_from_file():
 	
 	# get unfinished group
 	if group_modulo == 3:
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-4])
-		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
-		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
+		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
+		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
+		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s))
 	if group_modulo == 2:
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-4])
-		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
+		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
+		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e))
 	if group_modulo == 1:
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-4])
+		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n))
 
 
@@ -108,13 +110,13 @@ func select_face_group(joy_input) -> FaceGroupData:
 		joy_angle += 2*PI
 	
 	if joy_angle > greatest_angle:
-		print(str(facegroups[0].resource_name))
+		#print(str(facegroups[0].resource_name))
 		return facegroups[0]
 	
 	# iterate through all face groups to find where this angle is in
 	for f in facegroups:
 		if f.group_angles.x <= joy_angle && f.group_angles.y > joy_angle:
-			print(str(f.resource_name))
+			#print(str(f.resource_name))
 			return f
 		
 	return null

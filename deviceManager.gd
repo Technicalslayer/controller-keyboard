@@ -89,7 +89,7 @@ func _process(_delta: float) -> void:
 	
 	#region input
 	
-	if joyDisplay:
+	if joyDisplay and left_joy_output.length() > 0.1:
 		joyDisplay.update_cursor(left_joy_output)
 	if facegroupsManager:
 		cur_facegroup = facegroupsManager.select_face_group(left_joy_output)
