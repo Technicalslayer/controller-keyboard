@@ -2,6 +2,9 @@ extends Node2D
 
 var current_device := 0 # device ID
 #var inputManager : InputManager
+var joyDisplay
+var facegroupsManager
+var cur_facegroup = null
 
 func _ready() -> void:
 	Input.joy_connection_changed.connect(joypad_connected)
@@ -22,6 +25,10 @@ func _ready() -> void:
 		)
 	
 	$ColorPickerButton.color_changed.connect(color_picker_helper.bind(current_device))
+	
+	# look for other components
+	joyDisplay = $JoyDisplay
+	facegroupsManager = $FacegroupsManager
 
 
 func joypad_connected(device: int, connected: bool) -> void:
@@ -78,7 +85,28 @@ func _process(_delta: float) -> void:
 	Input.get_joy_axis(current_device, JOY_AXIS_LEFT_Y))
 	#var right_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_RIGHT_X), 
 	#Input.get_joy_axis(current_device, JOY_AXIS_RIGHT_Y))
-	print(str(left_joy_output.snapped(Vector2(0.1, 0.1))))
+	#print(str(left_joy_output.snapped(Vector2(0.1, 0.1))))
+	
+	#region input
+	
+	if joyDisplay:
+		joyDisplay.update_cursor(left_joy_output)
+	if facegroupsManager:
+		cur_facegroup = facegroupsManager.select_face_group(left_joy_output)
+	
+	# check buttons
+	if cur_facegroup:
+		if Input.is_action_just_pressed("north_face"):
+			print(str(cur_facegroup.north_button.key_code))
+			#send_input(...)
+		if Input.is_action_just_pressed("east_face"):
+			print(str(cur_facegroup.east_button.key_code))
+		if Input.is_action_just_pressed("west_face"):
+			print(str(cur_facegroup.west_button.key_code))
+		if Input.is_action_just_pressed("south_face"):
+			print(str(cur_facegroup.south_button.key_code))
+	
+	#endregion
 
 
 # clunky, but swaps param order cuz of shenanigans with bind and emit

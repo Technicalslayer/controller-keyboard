@@ -91,4 +91,5 @@ offset_bottom = 154.0
 [node name="JoyDisplay" parent="." instance=ExtResource("2_y37xc")]
 position = Vector2(672, 378)
 
-[node name="FacegroupsManager" parent="." instance=ExtResource("3_3thnl")]
+[node name="FacegroupsManager" parent="." node_paths=PackedStringArray("joyDisplay") instance=ExtResource("3_3thnl")]
+joyDisplay = NodePath("../JoyDisplay")

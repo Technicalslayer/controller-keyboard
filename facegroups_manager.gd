@@ -7,22 +7,27 @@ var facegroups: Array[FaceGroupData]
 var cur_face_group: FaceGroupData = null
 var current_device
 
+@export
+var joyDisplay: Node
+
 
 func _ready():
 	_read_facegroup_from_file() # temp?
+	if joyDisplay:
+		joyDisplay.update_grid(facegroups.size())
 	# connect signals
-	Input.joy_connection_changed.connect(joypad_connected)
+	#Input.joy_connection_changed.connect(joypad_connected)
 
 
-func joypad_connected(device, _connected):
-	current_device = device
+#func joypad_connected(device, _connected):
+	#current_device = device
 
 
-func _process(_delta):
-	var left_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_LEFT_X),
-			Input.get_joy_axis(current_device, JOY_AXIS_LEFT_Y))
+#func _process(_delta):
+	#var left_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_LEFT_X),
+			#Input.get_joy_axis(current_device, JOY_AXIS_LEFT_Y))
 	
-	_select_face_group(left_joy_output.angle())
+	#_select_face_group(left_joy_output.angle())
 
 
 # returns array of lower and upper angle bounds. (lower angle=x, upper angle=y)
@@ -80,6 +85,7 @@ func _read_facegroup_from_file():
 
 func create_facegroup():
 	# need to get the data for the face group
+	#joyDisplay.update_grid(facegroups.size())
 	pass
 	# face group has 4 face buttons, an upper and lower angle
 	# buttons are in an array? could just have 4 variables
@@ -89,25 +95,26 @@ func create_facegroup():
 	# button data just needs what character to output and maybe activation mode
 
 
-func _select_face_group(joy_angle) -> void:
+func select_face_group(joy_input) -> FaceGroupData:
 	# My math might be bad here, but Vector2.angle() returns negative values when
 	#  over 1 PI. I can wrap all angles to positive, but this causes issues
 	#  because of the offset I apply makes the first group have a negative lower
 	#  bound and a positive upper bound. If the angle is greater than the last
 	#  group's upper bound - which will always be positive - it has to be in 
 	#  the first group
+	var joy_angle = joy_input.angle()
 	if joy_angle < 0:
 		# make positive
 		joy_angle += 2*PI
 	
-	if joy_angle > $"../ControllerController".greatest_angle:
-		print(str($"../ControllerController".face_groups[0].resource_name))
-		cur_face_group = $"../ControllerController".face_groups[0]
+	if joy_angle > greatest_angle:
+		print(str(facegroups[0].resource_name))
+		return facegroups[0]
 	
 	# iterate through all face groups to find where this angle is in
-	for f in $"../ControllerController".face_groups:
+	for f in facegroups:
 		if f.group_angles.x <= joy_angle && f.group_angles.y > joy_angle:
 			print(str(f.resource_name))
-			cur_face_group = f
+			return f
 		
-	cur_face_group = null
+	return null
