@@ -1,13 +1,14 @@
 extends Node2D
 
 var current_device := 0 # device ID
-#var inputManager : InputManager
+var inputEmulator : InputEmulator
 var joyDisplay
 var facegroupsManager
 var cur_facegroup = null
 
 func _ready() -> void:
 	Input.joy_connection_changed.connect(joypad_connected)
+	inputEmulator = InputEmulator.new()
 	
 	# connect buttons
 	$Calibrate.pressed.connect(func() -> void:
@@ -97,14 +98,17 @@ func _process(_delta: float) -> void:
 	# check buttons
 	if cur_facegroup:
 		if Input.is_action_just_pressed("north_face"):
-			print(str(cur_facegroup.north_button.key_code))
-			#send_input(...)
+			#print(str(cur_facegroup.north_button.key_code))
+			inputEmulator.single_key_press_and_release(cur_facegroup.north_button.key_code)
 		if Input.is_action_just_pressed("east_face"):
-			print(str(cur_facegroup.east_button.key_code))
+			#print(str(cur_facegroup.east_button.key_code))
+			inputEmulator.single_key_press_and_release(cur_facegroup.east_button.key_code)
 		if Input.is_action_just_pressed("west_face"):
-			print(str(cur_facegroup.west_button.key_code))
+			#print(str(cur_facegroup.west_button.key_code))
+			inputEmulator.single_key_press_and_release(cur_facegroup.west_button.key_code)
 		if Input.is_action_just_pressed("south_face"):
-			print(str(cur_facegroup.south_button.key_code))
+			#print(str(cur_facegroup.south_button.key_code))
+			inputEmulator.single_key_press_and_release(cur_facegroup.south_button.key_code)
 	
 	#endregion
 

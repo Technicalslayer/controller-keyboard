@@ -3,6 +3,7 @@ extends Node
 var greatest_angle # if calc angle is greater than this, it will be in the first group
 @export
 var facegroups: Array[FaceGroupData]
+var characterArray: PackedStringArray # all the characters being used in the face groups
 
 var cur_face_group: FaceGroupData = null
 var current_device
@@ -14,7 +15,7 @@ var joyDisplay: Node
 func _ready():
 	_read_facegroup_from_file() # temp?
 	if joyDisplay:
-		joyDisplay.update_grid(facegroups.size())
+		joyDisplay.update_grid(facegroups.size(), characterArray)
 	# connect signals
 	#Input.joy_connection_changed.connect(joypad_connected)
 
@@ -51,6 +52,7 @@ func _read_facegroup_from_file():
 	var content = file.get_as_text()
 	content = content.trim_suffix("\n")
 	var split_array = content.split(" ", false)
+	characterArray = split_array
 	var num_groups = ceili(split_array.size()/4.0)
 	print("split array size: %s" % [split_array.size()])
 	var group_modulo = split_array.size() % 4 # how many in the last incomplete group
