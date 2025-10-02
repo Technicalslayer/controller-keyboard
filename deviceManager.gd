@@ -110,6 +110,20 @@ func _process(_delta: float) -> void:
 			#print(str(cur_facegroup.south_button.key_code))
 			inputEmulator.single_key_press_and_release(cur_facegroup.south_button.key_code)
 	
+	# hardcoded backspace for now
+	if Input.is_action_just_pressed("back"):
+		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_BACK)
+	
+	# hardcoded shift for now
+	if Input.is_action_just_pressed("left_bumper"):
+		inputEmulator.single_key_press(JKEnumHelper.Key_Codes.VK_LSHIFT)
+	if Input.is_action_just_released("left_bumper"):
+		inputEmulator.single_key_release(JKEnumHelper.Key_Codes.VK_LSHIFT)
+	
+	# later add functionality to face buttons when no joystick deflection
+	if Input.is_action_just_pressed("right_bumper"):
+		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_SPACE)
+
 	#endregion
 
 
