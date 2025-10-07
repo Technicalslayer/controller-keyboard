@@ -5,6 +5,8 @@ var inputEmulator : InputEmulator
 var joyDisplay
 var facegroupsManager
 var cur_facegroup = null
+var gyro_enabled = true
+var gyro_sens = 50.0
 
 func _ready() -> void:
 	Input.joy_connection_changed.connect(joypad_connected)
@@ -39,6 +41,7 @@ func joypad_connected(device: int, connected: bool) -> void:
 		$GyroCheck.button_pressed = false # has gyrometer
 		$LightCheck.button_pressed = false # has LED support
 		$ColorPickerButton.disabled = true # allows selecting LED color
+		$GyroToggle.button_pressed = false
 		return
 		
 	current_device = device
@@ -110,20 +113,26 @@ func _process(_delta: float) -> void:
 			#print(str(cur_facegroup.south_button.key_code))
 			inputEmulator.single_key_press_and_release(cur_facegroup.south_button.key_code)
 	
-	# hardcoded backspace for now
+	# hardcoded backspace for now. Want to be able to hold it
 	if Input.is_action_just_pressed("back"):
 		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_BACK)
 	
 	# hardcoded shift for now
 	if Input.is_action_just_pressed("left_bumper"):
 		inputEmulator.single_key_press(JKEnumHelper.Key_Codes.VK_LSHIFT)
-	if Input.is_action_just_released("left_bumper"):
+	if Input.is_action_just_released("left_bumper"): 
 		inputEmulator.single_key_release(JKEnumHelper.Key_Codes.VK_LSHIFT)
 	
 	# later add functionality to face buttons when no joystick deflection
 	if Input.is_action_just_pressed("right_bumper"):
 		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_SPACE)
+	
+	if Input.is_action_just_pressed("right_trigger"):
+		inputEmulator.click_mouse()
 
+	if gyro_enabled and Input.has_joy_gyroscope(0):
+		var gyroVec = Input.get_joy_gyroscope(0)
+		inputEmulator.move_mouse(Vector2(gyroVec.y, gyroVec.x) * gyro_sens)
 	#endregion
 
 
@@ -132,3 +141,17 @@ func _process(_delta: float) -> void:
 func color_picker_helper(color: Color, cur_dev : int):
 	Input.set_joy_light(cur_dev, color)
 	print("Set color to %s" % [color])
+
+
+func _on_gyro_toggle_toggled(toggled_on):
+	gyro_enabled = toggled_on
+
+
+func _on_reset_calibration_pressed():
+	Input.start_joy_motion_calibration(0)
+	# Send 50 calibration samples in 2.5 seconds
+	for i in 50:
+		Input.step_joy_motion_calibration(0)
+		await get_tree().create_timer(0.05).timeout
+	Input.stop_joy_motion_calibration(0)
+	# The joypad is now calibrated

@@ -93,3 +93,15 @@ position = Vector2(672, 378)
 
 [node name="FacegroupsManager" parent="." node_paths=PackedStringArray("joyDisplay") instance=ExtResource("3_3thnl")]
 joyDisplay = NodePath("../JoyDisplay")
+
+[node name="GyroToggle" type="CheckButton" parent="."]
+anchors_preset = -1
+offset_left = -4.0
+offset_top = 83.0
+offset_right = 142.0
+offset_bottom = 119.0
+button_pressed = true
+text = "Enable Gyro"
+
+[connection signal="pressed" from="ResetCalibration" to="." method="_on_reset_calibration_pressed"]
+[connection signal="toggled" from="GyroToggle" to="." method="_on_gyro_toggle_toggled"]
