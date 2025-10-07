@@ -84,14 +84,14 @@ func _process(_delta: float) -> void:
 		#$ColorRect.position.y += Input.get_joy_gyroscope(0).x * 5
 		#$ColorRect2.position.x += Input.get_joy_accelerometer(0).x * 5
 		#$ColorRect2.position.y += Input.get_joy_accelerometer(0).y * 5
+	#region input
 	
 	var left_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_LEFT_X),
 	Input.get_joy_axis(current_device, JOY_AXIS_LEFT_Y))
-	#var right_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_RIGHT_X), 
-	#Input.get_joy_axis(current_device, JOY_AXIS_RIGHT_Y))
+	var right_joy_output = Vector2(Input.get_joy_axis(current_device,JOY_AXIS_RIGHT_X), 
+	Input.get_joy_axis(current_device, JOY_AXIS_RIGHT_Y))
 	#print(str(left_joy_output.snapped(Vector2(0.1, 0.1))))
 	
-	#region input
 	
 	if joyDisplay and left_joy_output.length() > 0.1:
 		joyDisplay.update_cursor(left_joy_output)
@@ -128,11 +128,18 @@ func _process(_delta: float) -> void:
 		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_SPACE)
 	
 	if Input.is_action_just_pressed("right_trigger"):
-		inputEmulator.click_mouse()
+		inputEmulator.mouse_left_down()
+	
+	if Input.is_action_just_released("right_trigger"):
+		inputEmulator.mouse_left_up()
 
 	if gyro_enabled and Input.has_joy_gyroscope(0):
 		var gyroVec = Input.get_joy_gyroscope(0)
-		inputEmulator.move_mouse(Vector2(gyroVec.y, gyroVec.x) * gyro_sens)
+		inputEmulator.mouse_move(Vector2(gyroVec.y, gyroVec.x) * gyro_sens)
+	
+	if right_joy_output.length() > 0.1:
+		inputEmulator.mouse_move(right_joy_output * gyro_sens)
+	
 	#endregion
 
 
