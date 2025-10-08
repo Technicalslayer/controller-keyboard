@@ -1,24 +1,35 @@
 extends Node
 
-var greatest_angle # if calc angle is greater than this, it will be in the first group
 @export
-var facegroups: Array[FaceGroupData]
-var characterArray: PackedStringArray # all the characters being used in the face groups
-
+var default_facegroups_file : String
+@export
+var file_dialog : FileDialog
+#@export
+#var facegroups: Array[FaceGroupData]
+#var characterArray: PackedStringArray # all the characters being used in the face groups
+var cur_collection
+var cur_collection_index = 0
 var cur_face_group: FaceGroupData = null
 var current_device
+var facegroups_collections: Array[FacegroupCollection]
+var greatest_angle_temp = 0
 
 @export
 var joyDisplay: Node
 
 
 func _ready():
-	_read_facegroup_from_file() # temp?
+	facegroups_collections.append(_read_facegroup_from_file())
+	cur_collection = facegroups_collections[0]
 	if joyDisplay:
-		joyDisplay.update_grid(facegroups.size(), characterArray)
+		joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
 	# connect signals
 	#Input.joy_connection_changed.connect(joypad_connected)
+	if file_dialog:
+		file_dialog.file_selected.connect(file_chosen)
 
+func file_chosen(filePath):
+	_read_facegroup_from_file(filePath)
 
 #func joypad_connected(device, _connected):
 	#current_device = device
@@ -35,7 +46,7 @@ func _ready():
 func _calculate_face_group_angles(num_groups) -> Array:
 	var group_angle_size = 2*PI/num_groups
 	var group_offset = group_angle_size/2 # used to "center" group so first group middle is at 0 degrees
-	greatest_angle = (2*PI) - group_offset
+	greatest_angle_temp = (2*PI) - group_offset # don't know how to pass this cleanly
 	
 	var group_angles: Array
 	for i in num_groups:
@@ -47,19 +58,20 @@ func _calculate_face_group_angles(num_groups) -> Array:
 	return group_angles
 
 
-func _read_facegroup_from_file():
-	var file = FileAccess.open("res://face_groups.txt", FileAccess.READ)
+func _read_facegroup_from_file(text_file = default_facegroups_file) -> FacegroupCollection:
+	var collection = FacegroupCollection.new()
+	var file = FileAccess.open(text_file, FileAccess.READ)
 	var content = file.get_as_text()
 	content = content.trim_suffix("\n")
 	var split_array = content.split(" ", false)
-	characterArray = split_array
+	collection.characterArray = split_array
 	var num_groups = ceili(split_array.size()/4.0)
 	print("split array size: %s" % [split_array.size()])
 	var group_modulo = split_array.size() % 4 # how many in the last incomplete group
 	
 	# get button info and angles
 	var group_angles = _calculate_face_group_angles(num_groups)
-	
+	collection.greatest_angle = greatest_angle_temp
 	#maybe keep track of index i outside of loop to allow more flexible assignment for face groups
 	# get complete groups
 	var complete_groups = num_groups if group_modulo == 0 else num_groups-1
@@ -70,22 +82,23 @@ func _read_facegroup_from_file():
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[k+1])
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[k+2])
 		var w = JKEnumHelper.Char_To_Key_Code.get(split_array[k+3])
-		facegroups.append(FaceGroupData.new(group_angles[i], n, e, s, w))
+		collection.facegroups.append(FaceGroupData.new(group_angles[i], n, e, s, w))
 	
 	# get unfinished group
 	if group_modulo == 3:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s))
+		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s))
 	if group_modulo == 2:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e))
+		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e))
 	if group_modulo == 1:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n))
-
+		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n))
+	
+	return collection
 
 func create_facegroup():
 	# need to get the data for the face group
@@ -111,14 +124,25 @@ func select_face_group(joy_input) -> FaceGroupData:
 		# make positive
 		joy_angle += 2*PI
 	
-	if joy_angle > greatest_angle:
+	if joy_angle > cur_collection.greatest_angle:
 		#print(str(facegroups[0].resource_name))
-		return facegroups[0]
+		return cur_collection.facegroups[0]
 	
 	# iterate through all face groups to find where this angle is in
-	for f in facegroups:
+	for f in cur_collection.facegroups:
 		if f.group_angles.x <= joy_angle && f.group_angles.y > joy_angle:
 			#print(str(f.resource_name))
 			return f
 		
 	return null
+
+func change_facegroup_collection():
+	pass
+
+func cycle_facegroup_collection():
+	var new_index = cur_collection_index + 1
+	if new_index >= facegroups_collections.size():
+		new_index = 0
+	cur_collection = facegroups_collections[new_index]
+	if joyDisplay:
+		joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)

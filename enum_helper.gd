@@ -221,4 +221,5 @@ var Char_To_Key_Code: Dictionary = {
 	'x' = Key_Codes.VK_X,
 	'y' = Key_Codes.VK_Y,
 	'z' = Key_Codes.VK_Z,
+	'`' = Key_Codes. # look into using c++ code to convert chars to scan codes?
 }

@@ -93,8 +93,11 @@ func _process(_delta: float) -> void:
 	#print(str(left_joy_output.snapped(Vector2(0.1, 0.1))))
 	
 	
-	if joyDisplay and left_joy_output.length() > 0.1:
-		joyDisplay.update_cursor(left_joy_output)
+	if joyDisplay:
+		if left_joy_output.length() > 0.1:
+			joyDisplay.update_cursor(left_joy_output)
+		else:
+			joyDisplay.update_cursor(Vector2.ZERO)
 	if facegroupsManager:
 		cur_facegroup = facegroupsManager.select_face_group(left_joy_output)
 	
@@ -112,6 +115,12 @@ func _process(_delta: float) -> void:
 		if Input.is_action_just_pressed("south_face"):
 			#print(str(cur_facegroup.south_button.key_code))
 			inputEmulator.single_key_press_and_release(cur_facegroup.south_button.key_code)
+	else:
+		# no face group selected
+		if Input.is_action_just_pressed("south_face"):
+			inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_SPACE)
+		if Input.is_action_just_pressed("west_face"):
+			inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_BACK)
 	
 	# hardcoded backspace for now. Want to be able to hold it
 	if Input.is_action_just_pressed("back"):
@@ -125,7 +134,7 @@ func _process(_delta: float) -> void:
 	
 	# later add functionality to face buttons when no joystick deflection
 	if Input.is_action_just_pressed("right_bumper"):
-		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_SPACE)
+		facegroupsManager.cycle_facegroup_collection()
 	
 	if Input.is_action_just_pressed("right_trigger"):
 		inputEmulator.mouse_left_down()
@@ -162,3 +171,8 @@ func _on_reset_calibration_pressed():
 		await get_tree().create_timer(0.05).timeout
 	Input.stop_joy_motion_calibration(0)
 	# The joypad is now calibrated
+
+
+
+func _on_select_file_pressed():
+	$FileDialog.show()
