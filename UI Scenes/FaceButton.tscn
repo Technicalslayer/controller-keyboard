@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbtva7gddo200"]
+
+[ext_resource type="Script" uid="uid://c3l8tjgkkotjx" path="res://button_data.gd" id="1_hqgt6"]
+
+[node name="FaceButton" type="Button"]
+text = "A"
+script = ExtResource("1_hqgt6")

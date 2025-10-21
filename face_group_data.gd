@@ -1,14 +1,14 @@
 class_name FaceGroupData
-extends Resource
+extends Node
 
 # face buttons
-@export
+#@export
 var north_button: ButtonData
-@export
+#@export
 var east_button: ButtonData
-@export
+#@export
 var south_button: ButtonData
-@export
+#@export
 var west_button: ButtonData
 
 var group_angles: Vector2 = Vector2(0.0, PI/4)
@@ -21,6 +21,10 @@ func _init(
 ):
 	group_angles = _group_angles
 	north_button = ButtonData.new(_north_key, _n_activation)
+	add_child(north_button)
 	east_button = ButtonData.new(_east_key, _e_activation)
+	add_child(east_button)
 	south_button = ButtonData.new(_south_key, _s_activation)
+	add_child(south_button)
 	west_button = ButtonData.new(_west_key, _w_activation)
+	add_child(west_button)

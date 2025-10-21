@@ -82,22 +82,29 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[k+1])
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[k+2])
 		var w = JKEnumHelper.Char_To_Key_Code.get(split_array[k+3])
-		collection.facegroups.append(FaceGroupData.new(group_angles[i], n, e, s, w))
+		var FGData = FaceGroupData.new(group_angles[i], n, e, s, w)
+		collection.facegroups.append(FGData)
+		add_child(FGData)
 	
 	# get unfinished group
 	if group_modulo == 3:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s))
+		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s)
+		collection.facegroups.append(FGData)
+		add_child(FGData)
 	if group_modulo == 2:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n, e))
+		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e)
+		collection.facegroups.append(FGData)
+		add_child(FGData)
 	if group_modulo == 1:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n))
-	
+		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n)
+		add_child(FGData)
 	return collection
 
 func create_facegroup():
