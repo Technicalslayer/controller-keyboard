@@ -3,5 +3,7 @@
 [ext_resource type="Script" uid="uid://c3l8tjgkkotjx" path="res://button_data.gd" id="1_hqgt6"]
 
 [node name="FaceButton" type="Button"]
-text = "A"
+anchors_preset = -1
+offset_right = 8.0
+offset_bottom = 8.0
 script = ExtResource("1_hqgt6")

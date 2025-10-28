@@ -91,10 +91,10 @@ offset_bottom = 154.0
 [node name="JoyDisplay" parent="." instance=ExtResource("2_y37xc")]
 position = Vector2(672, 378)
 
-[node name="FacegroupsManager" parent="." node_paths=PackedStringArray("file_dialog", "joyDisplay") instance=ExtResource("3_3thnl")]
+[node name="FacegroupsManager" parent="." node_paths=PackedStringArray("file_dialog", "joy_display") instance=ExtResource("3_3thnl")]
 default_facegroups_file = "res://CollectionTextFiles/face_groups.txt"
 file_dialog = NodePath("../FileDialog")
-joyDisplay = NodePath("../JoyDisplay")
+joy_display = NodePath("../JoyDisplay")
 
 [node name="GyroToggle" type="CheckButton" parent="."]
 anchors_preset = -1

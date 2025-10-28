@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 JKEnumHelper="*res://enum_helper.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/ridiculous_coding/plugin.cfg")
+
 [input]
 
 north_face={

@@ -4,6 +4,8 @@ extends Node
 var default_facegroups_file : String
 @export
 var file_dialog : FileDialog
+@export
+var joy_display : Node
 #@export
 #var facegroups: Array[FaceGroupData]
 #var characterArray: PackedStringArray # all the characters being used in the face groups
@@ -14,22 +16,24 @@ var current_device
 var facegroups_collections: Array[FacegroupCollection]
 var greatest_angle_temp = 0
 
-@export
-var joyDisplay: Node
 
 
 func _ready():
 	facegroups_collections.append(_read_facegroup_from_file())
 	cur_collection = facegroups_collections[0]
-	if joyDisplay:
-		joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
+	if joy_display:
+		# pass collection
+		joy_display.update_grid(cur_collection)
+		#joy_display.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
 	# connect signals
 	#Input.joy_connection_changed.connect(joypad_connected)
 	if file_dialog:
 		file_dialog.file_selected.connect(file_chosen)
 
 func file_chosen(filePath):
-	_read_facegroup_from_file(filePath)
+	#maybe add name identifier to collection object? i.e. "Alphabet" or "Special Keys"
+	cur_collection = _read_facegroup_from_file(filePath)
+	facegroups_collections.append(cur_collection)
 
 #func joypad_connected(device, _connected):
 	#current_device = device
@@ -82,7 +86,7 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[k+1])
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[k+2])
 		var w = JKEnumHelper.Char_To_Key_Code.get(split_array[k+3])
-		var FGData = FaceGroupData.new(group_angles[i], n, e, s, w)
+		var FGData = FaceGroupData.new(group_angles[i], n, e, s, w, 0, 0, 0, 0)
 		collection.facegroups.append(FGData)
 		add_child(FGData)
 	
@@ -91,19 +95,19 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s)
+		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s, 0x41, 0, 0, 0)
 		collection.facegroups.append(FGData)
 		add_child(FGData)
 	if group_modulo == 2:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
 		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
-		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e)
+		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e, 0x41, 0x41, 0, 0)
 		collection.facegroups.append(FGData)
 		add_child(FGData)
 	if group_modulo == 1:
 		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n))
-		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n)
+		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, 0x41, 0x41, 0)
 		add_child(FGData)
 	return collection
 
@@ -151,5 +155,6 @@ func cycle_facegroup_collection():
 	if new_index >= facegroups_collections.size():
 		new_index = 0
 	cur_collection = facegroups_collections[new_index]
-	if joyDisplay:
-		joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
+	if joy_display:
+		#joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
+		joy_display.update_grid(cur_collection)
