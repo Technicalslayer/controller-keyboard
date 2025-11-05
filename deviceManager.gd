@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 var current_device := 0 # device ID
 var inputEmulator : InputEmulator
@@ -118,19 +118,19 @@ func _process(_delta: float) -> void:
 	else:
 		# no face group selected
 		if Input.is_action_just_pressed("south_face"):
-			inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_SPACE)
+			inputEmulator.single_key_press_and_release(KEY_SPACE)
 		if Input.is_action_just_pressed("west_face"):
-			inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_BACK)
+			inputEmulator.single_key_press_and_release(KEY_BACKSPACE)
 	
 	# hardcoded backspace for now. Want to be able to hold it
 	if Input.is_action_just_pressed("back"):
-		inputEmulator.single_key_press_and_release(JKEnumHelper.Key_Codes.VK_BACK)
+		inputEmulator.single_key_press_and_release(KEY_BACKSPACE)
 	
 	# hardcoded shift for now
 	if Input.is_action_just_pressed("left_bumper"):
-		inputEmulator.single_key_press(JKEnumHelper.Key_Codes.VK_LSHIFT)
+		inputEmulator.single_key_press(KEY_SHIFT)
 	if Input.is_action_just_released("left_bumper"): 
-		inputEmulator.single_key_release(JKEnumHelper.Key_Codes.VK_LSHIFT)
+		inputEmulator.single_key_release(KEY_SHIFT)
 	
 	# later add functionality to face buttons when no joystick deflection
 	if Input.is_action_just_pressed("right_bumper"):

@@ -76,6 +76,8 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 	# get button info and angles
 	var group_angles = _calculate_face_group_angles(num_groups)
 	collection.greatest_angle = greatest_angle_temp
+	
+	#var prompt_display = $InputPrompt
 	#maybe keep track of index i outside of loop to allow more flexible assignment for face groups
 	# get complete groups
 	var complete_groups = num_groups if group_modulo == 0 else num_groups-1
@@ -87,6 +89,9 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[k+2])
 		var w = JKEnumHelper.Char_To_Key_Code.get(split_array[k+3])
 		var FGData = FaceGroupData.new(group_angles[i], n, e, s, w, 0, 0, 0, 0)
+		#if prompt_display:
+			#FGData.north_button.button_clicked.connect(show_display())
+			#FGData.north_button.button_assigned.connect(hide_display())
 		collection.facegroups.append(FGData)
 		add_child(FGData)
 	
@@ -158,3 +163,9 @@ func cycle_facegroup_collection():
 	if joy_display:
 		#joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
 		joy_display.update_grid(cur_collection)
+
+func show_display():
+	$InputPrompt.show()
+
+func hide_display():
+	$InputPrompt.hide()

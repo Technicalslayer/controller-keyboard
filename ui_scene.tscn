@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bfn0hi6guyren" path="res://joy_display.tscn" id="2_y37xc"]
 [ext_resource type="PackedScene" uid="uid://i7rs4mnf7r4o" path="res://facegroups_manager.tscn" id="3_3thnl"]
 
-[node name="UIScene" type="Node2D"]
+[node name="UIScene" type="Node"]
 script = ExtResource("1_7s2fk")
 
 [node name="Calibrate" type="Button" parent="."]
@@ -119,6 +119,30 @@ offset_top = 275.0
 offset_right = 161.0
 offset_bottom = 306.0
 text = "Load Collection File"
+
+[node name="InputPrompt" type="Panel" parent="."]
+visible = false
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 546.0
+offset_top = 303.0
+offset_right = -369.0
+offset_bottom = -296.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="InputPrompt"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.013
+anchor_bottom = 1.0
+offset_right = -0.08100891
+text = "Listening for Input.
+Press 'Control and Q' to cancel."
+horizontal_alignment = 1
 
 [connection signal="pressed" from="ResetCalibration" to="." method="_on_reset_calibration_pressed"]
 [connection signal="toggled" from="GyroToggle" to="." method="_on_gyro_toggle_toggled"]
