@@ -144,6 +144,28 @@ text = "Listening for Input.
 Press 'Control and Q' to cancel."
 horizontal_alignment = 1
 
+[node name="DeadzoneSlider" type="HSlider" parent="."]
+anchors_preset = -1
+offset_left = 497.0
+offset_top = 36.0
+offset_right = 859.0
+offset_bottom = 52.0
+focus_mode = 1
+
+[node name="Label" type="Label" parent="DeadzoneSlider"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -74.5
+offset_top = -25.0
+offset_right = 74.5
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Right Joy Deadzone"
+
 [connection signal="pressed" from="ResetCalibration" to="." method="_on_reset_calibration_pressed"]
 [connection signal="toggled" from="GyroToggle" to="." method="_on_gyro_toggle_toggled"]
 [connection signal="pressed" from="SelectFile" to="." method="_on_select_file_pressed"]
+[connection signal="drag_ended" from="DeadzoneSlider" to="." method="_on_h_slider_drag_ended"]
+[connection signal="value_changed" from="DeadzoneSlider" to="." method="_on_deadzone_slider_value_changed"]

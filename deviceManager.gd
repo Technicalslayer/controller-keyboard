@@ -7,6 +7,7 @@ var facegroupsManager
 var cur_facegroup = null
 var gyro_enabled = true
 var gyro_sens = 50.0
+var left_joy_deadzone = 0
 
 func _ready() -> void:
 	Input.joy_connection_changed.connect(joypad_connected)
@@ -99,22 +100,34 @@ func _process(_delta: float) -> void:
 		else:
 			joyDisplay.update_cursor(Vector2.ZERO)
 	if facegroupsManager:
-		cur_facegroup = facegroupsManager.select_face_group(left_joy_output)
+		cur_facegroup = facegroupsManager.select_face_group(left_joy_output, left_joy_deadzone)
 	
 	# check buttons
 	if cur_facegroup:
 		if Input.is_action_just_pressed("north_face"):
 			#print(str(cur_facegroup.north_button.key_code))
-			inputEmulator.single_key_press_and_release(cur_facegroup.north_button.key_code)
+			if cur_facegroup.north_button.input_type == JK_Enums.Input_Types.UNICODE:
+				inputEmulator.single_unicode_press_and_release(cur_facegroup.north_button.unicode)
+			elif cur_facegroup.north_button.input_type == JK_Enums.Input_Types.KEY_CODE:
+				inputEmulator.single_key_press_and_release(cur_facegroup.north_button.key_code)
 		if Input.is_action_just_pressed("east_face"):
 			#print(str(cur_facegroup.east_button.key_code))
-			inputEmulator.single_key_press_and_release(cur_facegroup.east_button.key_code)
+			if cur_facegroup.east_button.input_type == JK_Enums.Input_Types.UNICODE:
+				inputEmulator.single_unicode_press_and_release(cur_facegroup.east_button.unicode)
+			elif cur_facegroup.east_button.input_type == JK_Enums.Input_Types.KEY_CODE:
+				inputEmulator.single_key_press_and_release(cur_facegroup.east_button.key_code)
 		if Input.is_action_just_pressed("west_face"):
 			#print(str(cur_facegroup.west_button.key_code))
-			inputEmulator.single_key_press_and_release(cur_facegroup.west_button.key_code)
+			if cur_facegroup.west_button.input_type == JK_Enums.Input_Types.UNICODE:
+				inputEmulator.single_unicode_press_and_release(cur_facegroup.west_button.unicode)
+			elif cur_facegroup.west_button.input_type == JK_Enums.Input_Types.KEY_CODE:
+				inputEmulator.single_key_press_and_release(cur_facegroup.west_button.key_code)
 		if Input.is_action_just_pressed("south_face"):
 			#print(str(cur_facegroup.south_button.key_code))
-			inputEmulator.single_key_press_and_release(cur_facegroup.south_button.key_code)
+			if cur_facegroup.south_button.input_type == JK_Enums.Input_Types.UNICODE:
+				inputEmulator.single_unicode_press_and_release(cur_facegroup.south_button.unicode)
+			elif cur_facegroup.south_button.input_type == JK_Enums.Input_Types.KEY_CODE:
+				inputEmulator.single_key_press_and_release(cur_facegroup.south_button.key_code)
 	else:
 		# no face group selected
 		if Input.is_action_just_pressed("south_face"):
@@ -176,3 +189,10 @@ func _on_reset_calibration_pressed():
 
 func _on_select_file_pressed():
 	$FileDialog.show()
+
+
+func _on_deadzone_slider_value_changed(value):
+	left_joy_deadzone = value
+	if joyDisplay:
+		joyDisplay.joy_deadzone = value
+		joyDisplay.queue_redraw()

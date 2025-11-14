@@ -11,6 +11,7 @@ var number_of_groups = 8
 var characterArray := PackedStringArray(["N","A"])
 var font
 var cur_collection: FacegroupCollection
+var joy_deadzone: float = 0.0
 
 
 func _ready():
@@ -95,7 +96,8 @@ func _draw():
 					##button.pos = charPos
 					#numCharsDrawn+=1
 	
-	draw_circle(Vector2.ZERO, display_radius, Color.BLACK, false, 4.0)
+	draw_circle(Vector2.ZERO, display_radius, Color.BLACK, false, 4.0) #outline
+	draw_circle(Vector2.ZERO, joy_deadzone, Color.DARK_RED, false, 1.0) #deadzone
 	
 	#psuedo for drawing characters
 	#for each group, draw the 4 characters in a clockwise fashion

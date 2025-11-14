@@ -128,13 +128,17 @@ func create_facegroup():
 	# button data just needs what character to output and maybe activation mode
 
 
-func select_face_group(joy_input) -> FaceGroupData:
+func select_face_group(joy_input, joy_deadzone = 0) -> FaceGroupData:
 	# My math might be bad here, but Vector2.angle() returns negative values when
 	#  over 1 PI. I can wrap all angles to positive, but this causes issues
 	#  because of the offset I apply makes the first group have a negative lower
 	#  bound and a positive upper bound. If the angle is greater than the last
 	#  group's upper bound - which will always be positive - it has to be in 
 	#  the first group
+	if joy_input.length() < joy_deadzone: 
+		# not working properly
+		return null
+	
 	var joy_angle = joy_input.angle()
 	if joy_angle < 0:
 		# make positive
