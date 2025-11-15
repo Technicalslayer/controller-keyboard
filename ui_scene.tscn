@@ -150,7 +150,9 @@ offset_left = 497.0
 offset_top = 36.0
 offset_right = 859.0
 offset_bottom = 52.0
-focus_mode = 1
+focus_mode = 0
+max_value = 1.0
+step = 0.010000000009313226
 
 [node name="Label" type="Label" parent="DeadzoneSlider"]
 layout_mode = 1

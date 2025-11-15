@@ -84,10 +84,14 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 	for i in complete_groups:
 		# get 4 each time
 		var k = i * 4
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[k])
-		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[k+1])
-		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[k+2])
-		var w = JKEnumHelper.Char_To_Key_Code.get(split_array[k+3])
+		var n = ord(split_array[k])
+		var e = ord(split_array[k+1])
+		var s = ord(split_array[k+2])
+		var w = ord(split_array[k+3])
+		#var n = JKEnumHelper.Char_To_Key_Code.get(split_array[k])
+		#var e = JKEnumHelper.Char_To_Key_Code.get(split_array[k+1])
+		#var s = JKEnumHelper.Char_To_Key_Code.get(split_array[k+2])
+		#var w = JKEnumHelper.Char_To_Key_Code.get(split_array[k+3])
 		var FGData = FaceGroupData.new(group_angles[i], n, e, s, w, 0, 0, 0, 0)
 		#if prompt_display:
 			#FGData.north_button.button_clicked.connect(show_display())
@@ -97,20 +101,26 @@ func _read_facegroup_from_file(text_file = default_facegroups_file) -> Facegroup
 	
 	# get unfinished group
 	if group_modulo == 3:
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
-		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
-		var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
+		var n = ord(split_array[split_array.size()-3])
+		var e = ord(split_array[split_array.size()-2])
+		var s = ord(split_array[split_array.size()-1])
+		#var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-3])
+		#var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
+		#var s = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e, s, 0x41, 0, 0, 0)
 		collection.facegroups.append(FGData)
 		add_child(FGData)
 	if group_modulo == 2:
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
-		var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
+		var n = ord(split_array[split_array.size()-2])
+		var e = ord(split_array[split_array.size()-1])
+		#var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-2])
+		#var e = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, e, 0x41, 0x41, 0, 0)
 		collection.facegroups.append(FGData)
 		add_child(FGData)
 	if group_modulo == 1:
-		var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
+		var n = ord(split_array[split_array.size()-1])
+		#var n = JKEnumHelper.Char_To_Key_Code.get(split_array[split_array.size()-1])
 		collection.facegroups.append(FaceGroupData.new(group_angles[group_angles.size()-1], n))
 		var FGData = FaceGroupData.new(group_angles[group_angles.size()-1], n, 0x41, 0x41, 0)
 		add_child(FGData)
@@ -136,7 +146,7 @@ func select_face_group(joy_input, joy_deadzone = 0) -> FaceGroupData:
 	#  group's upper bound - which will always be positive - it has to be in 
 	#  the first group
 	if joy_input.length() < joy_deadzone: 
-		# not working properly
+		#print("In Deadzone")
 		return null
 	
 	var joy_angle = joy_input.angle()

@@ -4,7 +4,7 @@ var current_device := 0
 var cursor
 var display_radius := 100.0 # radius of joy display border
 @export
-var distance_scale := 50.0
+var distance_scale := 100.0
 var group_radius := 100.0 # center of face group, multiplied by angled vector
 var offset_distance := 20.0 # how far from center of face group, in a cardinal direction
 var number_of_groups = 8
@@ -97,7 +97,7 @@ func _draw():
 					#numCharsDrawn+=1
 	
 	draw_circle(Vector2.ZERO, display_radius, Color.BLACK, false, 4.0) #outline
-	draw_circle(Vector2.ZERO, joy_deadzone, Color.DARK_RED, false, 1.0) #deadzone
+	draw_circle(Vector2.ZERO, joy_deadzone * distance_scale, Color.DARK_RED, false, 1.0) #deadzone
 	
 	#psuedo for drawing characters
 	#for each group, draw the 4 characters in a clockwise fashion

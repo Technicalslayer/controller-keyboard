@@ -100,6 +100,7 @@ func _process(_delta: float) -> void:
 		else:
 			joyDisplay.update_cursor(Vector2.ZERO)
 	if facegroupsManager:
+		#print(left_joy_output)
 		cur_facegroup = facegroupsManager.select_face_group(left_joy_output, left_joy_deadzone)
 	
 	# check buttons
@@ -131,19 +132,19 @@ func _process(_delta: float) -> void:
 	else:
 		# no face group selected
 		if Input.is_action_just_pressed("south_face"):
-			inputEmulator.single_key_press_and_release(KEY_SPACE)
+			inputEmulator.single_key_press_and_release(JK_Enums.Key_Codes.VK_SPACE)
 		if Input.is_action_just_pressed("west_face"):
-			inputEmulator.single_key_press_and_release(KEY_BACKSPACE)
+			inputEmulator.single_key_press_and_release(JK_Enums.Key_Codes.VK_BACK)
 	
 	# hardcoded backspace for now. Want to be able to hold it
 	if Input.is_action_just_pressed("back"):
-		inputEmulator.single_key_press_and_release(KEY_BACKSPACE)
+		inputEmulator.single_key_press_and_release(JK_Enums.Key_Codes.VK_BACK)
 	
 	# hardcoded shift for now
 	if Input.is_action_just_pressed("left_bumper"):
-		inputEmulator.single_key_press(KEY_SHIFT)
-	if Input.is_action_just_released("left_bumper"): 
-		inputEmulator.single_key_release(KEY_SHIFT)
+		inputEmulator.single_key_press_and_release(JK_Enums.Key_Codes.VK_SHIFT)
+	#if Input.is_action_just_released("left_bumper"): 
+		#inputEmulator.single_key_press_and_release(JK_Enums.Key_Codes.VK_CONTROL)
 	
 	# later add functionality to face buttons when no joystick deflection
 	if Input.is_action_just_pressed("right_bumper"):

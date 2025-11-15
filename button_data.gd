@@ -21,7 +21,15 @@ func _unhandled_input(event):
 			button_assigned.emit(event)
 		if event is InputEventKey:
 			# somehow check if shift is held? and only assign shift if it's released by itself
-			button_assigned.emit(event)
+			# windows only emits unicode values on key down, not up
+			# if shift is pressed, wait for shift up
+			if event.keycode == KEY_SHIFT:
+				if event.is_pressed():
+					return
+				if event.is_released():
+					button_assigned.emit(event)
+			elif event.is_pressed():
+				button_assigned.emit(event)
 
 func _init(_key_code = 0x41, _activation_type_enum = 0):
 	#key_code = _key_code
@@ -83,15 +91,16 @@ func _pressed():
 	print(str(value))
 	if value is InputEventKey:
 		#var t = JKEnumHelper.godot_vK_to_windows_vK.get(value.keycode)
+		print("Unicode:" + str(value.unicode))
 		if value.unicode != 0:
 			# has valid unicode representation
 			input_type = JK_Enums.Input_Types.UNICODE
 			unicode = value.unicode
-			print(unicode)
+			print("Unicode:" + str(unicode))
 		else:
 			# not a character, probably a special key like tab or shift
 			input_type = JK_Enums.Input_Types.KEY_CODE
-			key_code = value.keycode
+			key_code = JKEnumHelper.godot_vK_to_windows_vK[value.keycode]
 			print(key_code)
 		#print(t)
 		#print(JKEnumHelper.godot_vK_to_windows_vK.has(t))
