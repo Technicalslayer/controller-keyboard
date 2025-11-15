@@ -32,8 +32,12 @@ func _ready():
 
 func file_chosen(filePath):
 	#maybe add name identifier to collection object? i.e. "Alphabet" or "Special Keys"
-	cur_collection = _read_facegroup_from_file(filePath)
-	facegroups_collections.append(cur_collection)
+	facegroups_collections.append(_read_facegroup_from_file(filePath))
+	#cur_collection = _read_facegroup_from_file(filePath)
+	#facegroups_collections.append(cur_collection)
+	#cur_collection_index += 1
+	#cycle_facegroup_collection()
+	change_facegroup_collection(facegroups_collections.size() - 1) # select newest
 
 #func joypad_connected(device, _connected):
 	#current_device = device
@@ -166,14 +170,66 @@ func select_face_group(joy_input, joy_deadzone = 0) -> FaceGroupData:
 		
 	return null
 
-func change_facegroup_collection():
-	pass
+func change_facegroup_collection(index):
+	#hide buttons
+	for g in cur_collection.facegroups:
+		if g.north_button:
+			g.north_button.visible = false
+		if g.east_button:
+			g.east_button.visible = false
+		if g.west_button:
+			g.west_button.visible = false
+		if g.south_button:
+			g.south_button.visible = false
+
+	cur_collection = facegroups_collections[index]
+	cur_collection_index = index
+	
+	#show
+	for g in cur_collection.facegroups:
+		if g.north_button:
+			g.north_button.visible = true
+		if g.east_button:
+			g.east_button.visible = true
+		if g.west_button:
+			g.west_button.visible = true
+		if g.south_button:
+			g.south_button.visible = true
+	
+	if joy_display:
+		#joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
+		joy_display.update_grid(cur_collection)
+
 
 func cycle_facegroup_collection():
+	#hide buttons
+	for g in cur_collection.facegroups:
+		if g.north_button:
+			g.north_button.visible = false
+		if g.east_button:
+			g.east_button.visible = false
+		if g.west_button:
+			g.west_button.visible = false
+		if g.south_button:
+			g.south_button.visible = false
+
 	var new_index = cur_collection_index + 1
 	if new_index >= facegroups_collections.size():
 		new_index = 0
 	cur_collection = facegroups_collections[new_index]
+	cur_collection_index = new_index
+	
+	#show
+	for g in cur_collection.facegroups:
+		if g.north_button:
+			g.north_button.visible = true
+		if g.east_button:
+			g.east_button.visible = true
+		if g.west_button:
+			g.west_button.visible = true
+		if g.south_button:
+			g.south_button.visible = true
+	
 	if joy_display:
 		#joyDisplay.update_grid(cur_collection.facegroups.size(), cur_collection.characterArray)
 		joy_display.update_grid(cur_collection)

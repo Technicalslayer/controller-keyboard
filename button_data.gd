@@ -4,14 +4,15 @@ extends Button #extend something like 2d polygon and use pickable instead?
 
 
 @export
-var key_code: int = 0x41 # "A" by default
-var unicode: int = 0x0041 # "A" by default
+var key_code: int = -1 # blank by default
+var unicode: int = -1 # blank by default
 var input_type = JK_Enums.Input_Types.UNICODE
 #var key_code_display = 0x41 # what joyDisplay uses, as godot's keycodes may be different from the OS
 var activation_type_enum # rename this
 var button_radius = 10.0
 var input_display
 var listening = false
+#var visible = true
 #signal button_clicked
 signal button_assigned(input_value)
 
@@ -57,18 +58,25 @@ func _change_key_code():
 	queue_redraw()
 
 func _draw():
-	draw_circle(Vector2.ONE * button_radius, button_radius, Color.GRAY, true)
+	
+	if key_code == -1 and unicode == -1:
+		# button not in use
+		draw_circle(Vector2.ONE * button_radius, button_radius, Color.DARK_GRAY, true)
+	else:
+		draw_circle(Vector2.ONE * button_radius, button_radius, Color.GRAY, true)
+		if input_type == JK_Enums.Input_Types.UNICODE:
+			draw_char(ThemeDB.fallback_font, Vector2(button_radius/2.0, button_radius + button_radius/2.0),
+				 	char(unicode))
+		elif input_type == JK_Enums.Input_Types.MOUSE:
+			draw_line(Vector2(button_radius/2.0, button_radius/2.0), Vector2(button_radius, button_radius),
+					Color.GRAY)
+		elif input_type == JK_Enums.Input_Types.KEY_CODE:
+			draw_char(ThemeDB.fallback_font, Vector2(button_radius/2.0, button_radius + button_radius/2.0),
+				 	char(key_code))
+	
 	#draw_string(ThemeDB.fallback_font, Vector2.ONE * button_radius,
 			 #char(key_code),HORIZONTAL_ALIGNMENT_CENTER)
-	if input_type == JK_Enums.Input_Types.UNICODE:
-		draw_char(ThemeDB.fallback_font, Vector2(button_radius/2.0, button_radius + button_radius/2.0),
-			 	char(unicode))
-	elif input_type == JK_Enums.Input_Types.MOUSE:
-		draw_line(Vector2(button_radius/2.0, button_radius/2.0), Vector2(button_radius, button_radius),
-				Color.GRAY)
-	elif input_type == JK_Enums.Input_Types.KEY_CODE:
-		draw_char(ThemeDB.fallback_font, Vector2(button_radius/2.0, button_radius + button_radius/2.0),
-			 	char(key_code))
+	
 
 func redraw_button():
 	queue_redraw()
@@ -121,10 +129,12 @@ func _pressed():
 			#input_display.hide()
 			# do nothing
 	# assign input to button after converting
-	pass
+	queue_redraw()
 
 
 func _mouse_entered():
+	if unicode == -1 and key_code == -1:
+		return
 	if input_type == JK_Enums.Input_Types.UNICODE:
 		print("Entered Button: " + char(unicode))
 	elif input_type == JK_Enums.Input_Types.KEY_CODE:
@@ -132,6 +142,8 @@ func _mouse_entered():
 
 
 func _mouse_exited():
+	if unicode == -1 and key_code == -1:
+		return
 	if input_type == JK_Enums.Input_Types.UNICODE:
 		print("Exited Button: " + char(unicode))
 	elif input_type == JK_Enums.Input_Types.KEY_CODE:
